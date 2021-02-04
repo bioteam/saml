@@ -24,6 +24,8 @@ type Options struct {
 	SignRequest       bool
 	ForceAuthn        bool // TODO(ross): this should be *bool
 	CookieSameSite    http.SameSite
+
+	MetadataURL, AcsURL, SloURL string
 }
 
 // DefaultSessionCodec returns the default SessionCodec for the provided options,
@@ -79,9 +81,24 @@ func DefaultRequestTracker(opts Options, serviceProvider *saml.ServiceProvider) 
 // DefaultServiceProvider returns the default saml.ServiceProvider for the provided
 // options.
 func DefaultServiceProvider(opts Options) saml.ServiceProvider {
-	metadataURL := opts.URL.ResolveReference(&url.URL{Path: "saml/metadata"})
-	acsURL := opts.URL.ResolveReference(&url.URL{Path: "saml/acs"})
-	sloURL := opts.URL.ResolveReference(&url.URL{Path: "saml/slo"})
+
+	metadataRel := "saml/metadata"
+	acsRel := "saml/acs"
+	sloRel := "saml/slo"
+
+	if opts.AcsURL != "" {
+		acsRel = opts.AcsURL
+	}
+	if opts.MetadataURL != "" {
+		metadataRel = opts.MetadataURL
+	}
+	if opts.AcsURL != "" {
+		acsRel = opts.AcsURL
+	}
+
+	metadataURL := opts.URL.ResolveReference(&url.URL{Path: metadataRel})
+	acsURL := opts.URL.ResolveReference(&url.URL{Path: acsRel})
+	sloURL := opts.URL.ResolveReference(&url.URL{Path: sloRel})
 
 	var forceAuthn *bool
 	if opts.ForceAuthn {
