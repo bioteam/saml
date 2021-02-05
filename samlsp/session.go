@@ -93,11 +93,11 @@ func AttributeFromContext(ctx context.Context, name string) string {
 func AttributesFromContext(ctx context.Context) Attributes {
 	s := SessionFromContext(ctx)
 	if s == nil {
-		return ""
+		return Attributes{}
 	}
 	sa, ok := s.(SessionWithAttributes)
 	if !ok {
-		return ""
+		return Attributes{}
 	}
 	return sa.GetAttributes()
 }
