@@ -87,3 +87,17 @@ func AttributeFromContext(ctx context.Context, name string) string {
 	}
 	return sa.GetAttributes().Get(name)
 }
+
+// AttributesFromContext is a convenience method that returns all the named attributes
+// from the session, if available.
+func AttributesFromContext(ctx context.Context) Attributes {
+	s := SessionFromContext(ctx)
+	if s == nil {
+		return ""
+	}
+	sa, ok := s.(SessionWithAttributes)
+	if !ok {
+		return ""
+	}
+	return sa.GetAttributes()
+}
